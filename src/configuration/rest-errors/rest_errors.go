@@ -27,7 +27,7 @@ func NewRestError(message string, status int, error string, causes []Causes) *Re
 	}
 }
 
-func NewBadRequestError(message string, causes []Causes) *RestError {
+func NewBadRequestError(message string) *RestError {
 	return &RestError{
 		Message: message,
 		Status:  http.StatusBadRequest,

@@ -1,8 +1,8 @@
 package dtos
 
 type UserResponse struct {
-	Id 	 string `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Age	  int8    `json:"age"`
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Age   int8   `json:"age"`
 }

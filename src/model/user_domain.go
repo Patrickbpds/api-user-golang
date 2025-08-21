@@ -10,28 +10,28 @@ func NewUserDomain(
 	email, password, name string, 
 	age int8,
 	) UserDomainInterface {
-	return &UserDomain{
+	return &userDomain{
 		email, password, name, age,}
 }
 
 
-type UserDomain struct {
-	Email    string
-	Password string
-	Name     string
-	Age      int8
+type userDomain struct {
+	email    string
+	password string
+	name     string
+	age      int8
 }
 
-func (ud *UserDomain) EncryptPassword() {
+func (ud *userDomain) EncryptPassword() {
 	hash := md5.New()
 	defer hash.Reset()
-	hash.Write([]byte(ud.Password))
-	ud.Password = hex.EncodeToString(hash.Sum(nil))
+	hash.Write([]byte(ud.password))
+	ud.password = hex.EncodeToString(hash.Sum(nil))
 }
 
 type UserDomainInterface interface {
 	CreateUser() *rest_errors.RestError
-	GetUser(string) (*UserDomain, *rest_errors.RestError)
+	GetUser(string) (*userDomain, *rest_errors.RestError)
 	UpdateUser(string) *rest_errors.RestError
 	DeleteUser(string) *rest_errors.RestError 
 }

@@ -29,12 +29,12 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	domain := model.UserDomain{
-		Name:  userRequest.Name,
-		Email: userRequest.Email,
-		Password: userRequest.Password,
-		Age:   userRequest.Age,
-	}
+	domain := model.NewUserDomain(
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Name,
+		userRequest.Age,
+	)
 	if err := domain.CreateUser(); err != nil {
 		c.JSON(err.Status, err)
 		return

@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ud *UserDomain) CreateUser() *rest_errors.RestError {
+func (ud *userDomain) CreateUser() *rest_errors.RestError {
 	
 	logger.Info("Init createUser model", zap.String("jornal_action", "create_user"))
 

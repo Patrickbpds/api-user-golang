@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"api-user-golang/src/configuration/logger"
+	"api-user-golang/src/controller"
 	"api-user-golang/src/controller/routes"
+	"api-user-golang/src/model/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lpernett/godotenv"
@@ -20,9 +22,12 @@ func main() {
   } 
   fmt.Println(os.Getenv("TEST"))
 
+  service := service.NewUserDomainService()
+  userController := controller.NewUserControllerInterface(service)
+
   router := gin.Default()
 
-  routes.InitRoutes(&router.RouterGroup)
+  routes.InitRoutes(&router.RouterGroup, userController)
   if err := router.Run(":8080"); err != nil {
     log.Fatalf("Failed to start server: %v", err)
   }

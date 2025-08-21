@@ -5,7 +5,7 @@ import (
 	"api-user-golang/src/configuration/validation"
 	"api-user-golang/src/controller/dtos"
 	"api-user-golang/src/model"
-	"api-user-golang/src/model/service"
+	"api-user-golang/src/view"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -15,7 +15,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("Initializing CreateUser controller",
 		zap.String("jornal_action", "create_user"),
 	)
@@ -36,8 +36,7 @@ func CreateUser(c *gin.Context) {
 		userRequest.Name,
 		userRequest.Age,
 	)
-	service := service.NewUserDomainService()
-	if err := service.CreateUser(domain); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
@@ -45,5 +44,5 @@ func CreateUser(c *gin.Context) {
 	logger.Info("User created successfully",
 		zap.String("jornal_action", "create_user"),
 	)
-	c.String(200, "")
+	c.JSON(200, view.ConvertDomainToResponse(domain))
 }

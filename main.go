@@ -5,12 +5,15 @@ import (
 	"log"
 	"os"
 
-  "github.com/lpernett/godotenv"
-  "github.com/gin-gonic/gin"
-  "api-user-golang/src/controller/routes"
+	"api-user-golang/src/configuration/logger"
+	"api-user-golang/src/controller/routes"
+
+	"github.com/gin-gonic/gin"
+	"github.com/lpernett/godotenv"
 )
 
 func main() {
+  logger.Info("Starting API User Service...")
   err := godotenv.Load()	
   if err != nil {
     log.Fatal("Error loading .env file")

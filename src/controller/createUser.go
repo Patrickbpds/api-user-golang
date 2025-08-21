@@ -4,9 +4,14 @@ import (
 	"api-user-golang/src/configuration/logger"
 	"api-user-golang/src/configuration/validation"
 	"api-user-golang/src/controller/dtos"
+	"api-user-golang/src/model"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+)
+
+var (
+	UserDomainInterface model.UserDomainInterface
 )
 
 func CreateUser(c *gin.Context) {
@@ -24,14 +29,19 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	response := dtos.UserResponse{
-		Id:    "12345",
+	domain := model.UserDomain{
 		Name:  userRequest.Name,
 		Email: userRequest.Email,
+		Password: userRequest.Password,
 		Age:   userRequest.Age,
 	}
+	if err := domain.CreateUser(); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
 	logger.Info("User created successfully",
 		zap.String("jornal_action", "create_user"),
 	)
-	c.JSON(200, response)
+	c.String(200, "")
 }

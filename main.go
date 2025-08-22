@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"api-user-golang/src/configuration/database/mongodb"
 	"api-user-golang/src/configuration/logger"
 	"api-user-golang/src/controller"
 	"api-user-golang/src/controller/routes"
@@ -21,6 +22,8 @@ func main() {
     log.Fatal("Error loading .env file")
   } 
   fmt.Println(os.Getenv("TEST"))
+
+  mongodb.InitConnection()
 
   service := service.NewUserDomainService()
   userController := controller.NewUserControllerInterface(service)

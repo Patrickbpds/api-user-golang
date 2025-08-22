@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -16,22 +17,28 @@ import (
 )
 
 func main() {
-  logger.Info("Starting API User Service...")
-  err := godotenv.Load()	
-  if err != nil {
-    log.Fatal("Error loading .env file")
-  } 
-  fmt.Println(os.Getenv("TEST"))
+	logger.Info("Starting API User Service...")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	fmt.Println(os.Getenv("TEST"))
 
-  mongodb.InitConnection()
+	ctx := context.Background()
+	db, err := mongodb.NewMongoDbConnection(ctx)
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
 
-  service := service.NewUserDomainService()
-  userController := controller.NewUserControllerInterface(service)
+  _ = db
 
-  router := gin.Default()
+	service := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(service)
 
-  routes.InitRoutes(&router.RouterGroup, userController)
-  if err := router.Run(":8080"); err != nil {
-    log.Fatalf("Failed to start server: %v", err)
-  }
+	router := gin.Default()
+
+	routes.InitRoutes(&router.RouterGroup, userController)
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }

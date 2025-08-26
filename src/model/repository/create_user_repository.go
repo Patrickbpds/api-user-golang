@@ -6,6 +6,10 @@ import (
 	"api-user-golang/src/model"
 	"context"
 	"os"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.uber.org/zap"
+	"api-user-golang/src/model/entity/converter"
 )
 var (
 	COLLECTION_NAME = "MONGO_COLLECTION"
@@ -15,25 +19,28 @@ func (ur *userRepository) CreateUser(
 		userDomain model.UserDomainInterface,
 	) (model.UserDomainInterface, *rest_errors.RestError) {
 
-		logger.Info("Creating user in repository")
+		logger.Info("Creating user in repository", zap.String("jornal_action", "createUser"))
 		
 		collection_name := os.Getenv(COLLECTION_NAME)
 
 		collection := ur.databaseConnection.Collection(collection_name)
-		
-		value, err := userDomain.GetJSONValue();
-		if err != nil {
-			return nil, rest_errors.NewInternalServerError("Error getting JSON value for user domain")
-		}
-		collection.InsertOne(context.Background(), value)
+	
+		value := converter.ConverterDomainToEntity(userDomain)
 
-		result , err := collection.InsertOne(context.Background(), value)
+		result, err := collection.InsertOne(context.Background(), value)
 		if err != nil {
-			return nil, rest_errors.NewInternalServerError("Error getting JSON value for user domain")
-		}
+		logger.Error("Error trying to create user",
+			err,
+			zap.String("journey", "createUser"))
+		return nil, rest_errors.NewInternalServerError(err.Error())
+	}
 
-		userDomain.SetId(result.InsertedID.(string))
-		logger.Info("User created successfully in repository")
-		
-		return userDomain, nil
+		value.Id = result.InsertedID.(primitive.ObjectID)
+
+		logger.Info(
+		"CreateUser repository executed successfully",
+		zap.String("userId", value.Id.Hex()),
+		zap.String("journey", "createUser"))
+
+		return converter.ConverterEntityToDomain(*value), nil
 	}

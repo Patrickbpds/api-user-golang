@@ -7,15 +7,15 @@ import (
 	"api-user-golang/src/configuration/database/mongodb"
 	"api-user-golang/src/configuration/logger"
 	"api-user-golang/src/controller/routes"
-
 	"github.com/gin-gonic/gin"
 	"github.com/lpernett/godotenv"
+
 )
 
 func main() {
 	logger.Info("Starting API User Service...")
 	
-	err := godotenv.Load()
+	godotenv.Load()
 
 	database, err := mongodb.NewMongoDbConnection(context.Background())
 	if err != nil {
